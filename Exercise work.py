@@ -1,9 +1,3 @@
-#!/usr/bin/env python
-# coding: utf-8
-
-# In[1]:
-
-
 #imports
 import torch
 import torch.nn as nn
@@ -11,7 +5,6 @@ import torch.nn.functional as F
 from torch.utils.data import DataLoader
 from torchvision import datasets, transforms
 from torchvision.utils import make_grid
-
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -24,17 +17,9 @@ test_data = datasets.FashionMNIST(root='../Data', train=False, download=True, tr
 
 class_names = ['T-shirt','Trouser','Sweater','Dress','Coat','Sandal','Shirt','Sneaker','Bag','Boot']
 
-
-# In[2]:
-
-
 #data loaders
 train_loader = DataLoader(train_data, batch_size=10, shuffle=True)
 test_loader = DataLoader(test_data, batch_size=10, shuffle=False)
-
-
-# In[3]:
-
 
 #take sample of batches
 for images,labels in train_loader: 
@@ -44,10 +29,6 @@ im = make_grid(images, nrow=10)
 plt.figure(figsize=(12,4))
 
 plt.imshow(np.transpose(im.numpy(), (1, 2, 0)));
-
-
-# In[4]:
-
 
 #show images and labels
 for images,labels in train_loader: 
@@ -61,10 +42,6 @@ plt.figure(figsize=(12,4))
 
 plt.imshow(np.transpose(im.numpy(), (1, 2, 0)));
 
-
-# In[5]:
-
-
 #downsample (without padding and with 2x2 filter) to see if ok 
 conv = nn.Conv2d(1, 1, 5, 1)
 for x,labels in train_loader:
@@ -73,17 +50,9 @@ for x,labels in train_loader:
 x = conv(x)
 print('Down size:',x.shape)
 
-
-# In[6]:
-
-
 # resulting
 x = F.max_pool2d(x, 2, 2)
 print('Down size:',x.shape)
-
-
-# In[8]:
-
 
 #define CNN
 class ConvolutionalNetwork(nn.Module):
@@ -107,10 +76,6 @@ class ConvolutionalNetwork(nn.Module):
 torch.manual_seed(101)
 model = ConvolutionalNetwork()
 
-
-# In[9]:
-
-
 # just to see the trainable weights and biases
 def count_parameters(model):
     params = [p.numel() for p in model.parameters() if p.requires_grad]
@@ -120,17 +85,9 @@ def count_parameters(model):
     
 count_parameters(model)
 
-
-# In[10]:
-
-
 #define loss function
 criterion = nn.CrossEntropyLoss()
 optimizer = torch.optim.Adam(model.parameters(), lr=0.001)
-
-
-# In[12]:
-
 
 #train model
 epochs = 5
@@ -150,11 +107,7 @@ for i in range(epochs):
     # OPTIONAL print statement
     print(f'{i+1} of {epochs} epochs completed')
 
-
-# In[13]:
-
-
-evaluate the model
+#evaluate the model
 model.eval()
 
 with torch.no_grad():
@@ -165,10 +118,4 @@ with torch.no_grad():
         correct += (predicted == y_test).sum()
         
 print(f'Test accuracy: {correct.item()}/{len(test_data)} = {correct.item()*100/(len(test_data)):7.3f}%')
-
-
-# In[ ]:
-
-
-
 
